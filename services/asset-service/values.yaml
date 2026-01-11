@@ -1,0 +1,22 @@
+replicaCount: 1
+image:
+  repository: devacr301225.azurecr.io/asset-service
+  tag: 3967eb8aba240ca6ff4559fb85438de81ba2c98e
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8081
+env:
+  SERVER_PORT: "8081"
+  DB_URL: jdbc:postgresql://dev-postgres301225.postgres.database.azure.com:5432/assetdb
+  DB_USERNAME: pgadmin
+  DB_PASSWORD: Strong@123 # ⚠️ We’ll fix this later
+ingress:
+  enabled: true
+  className: azure/application-gateway
+  host: asset.sikshasathi.tech
+  sslRedirect: "true"
+  sslCertificate: wildcard-sikshasathi-tech
+health:
+  path: /actuator/health

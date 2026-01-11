@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: it-asset-services
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/ITAssetManagementSystem/it-asset-gitops.git
+        directories:
+          - path: services/*
+  template:
+    metadata:
+      name: "{{path.basename}}"
+    spec:
+      project: default
+
+      sources:
+        # Helm chart (OCI)
+        - repoURL: oci://devacr301225.azurecr.io/helm/service
+          chart: service
+          targetRevision: 1.0.2
+          helm:
+            passCredentials: true
+            valueFiles:
+              - $values/services/{{path.basename}}/values.yaml
+
+        # Values repo reference
+        - repoURL: https://github.com/ITAssetManagementSystem/it-asset-gitops.git
+          targetRevision: main
+          ref: values
+
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: 'it-{{path.basename | replace("-service","")}}'
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

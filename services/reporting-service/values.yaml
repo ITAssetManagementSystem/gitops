@@ -1,0 +1,23 @@
+replicaCount: 1
+image:
+  repository: devacr301225.azurecr.io/reporting-service
+  tag: 044a226255e6890cabd643bdc3460de0c52ba554
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8083
+env:
+  SERVER_PORT: "8083"
+  # Inter-service communication
+  ASSET_SERVICE_URL: http://asset-service.it-asset.svc.cluster.local
+  EMPLOYEE_SERVICE_URL: http://employee-service.it-employee.svc.cluster.local
+  ASSIGNMENT_SERVICE_URL: http://assignment-service.it-assignment.svc.cluster.local
+ingress:
+  enabled: true
+  className: azure/application-gateway
+  host: reporting.sikshasathi.tech
+  sslRedirect: "true"
+  sslCertificate: wildcard-sikshasathi-tech
+health:
+  path: /health

@@ -1,0 +1,23 @@
+replicaCount: 1
+image:
+  repository: devacr301225.azurecr.io/assignment-service
+  tag: 93d1be6b219b70c02a3492347ec8ec3cef8e2281
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+env:
+  SERVER_PORT: "8080"
+  ASSIGNMENT_DB_URL: "postgres://pgadmin:Strong@123@dev-postgres301225.postgres.database.azure.com:5432/assignmentdb?sslmode=require"
+  # Inter-service communication
+  ASSET_SERVICE_BASE_URL: http://asset-service.it-asset.svc.cluster.local
+  EMPLOYEE_SERVICE_BASE_URL: http://employee-service.it-employee.svc.cluster.local
+ingress:
+  enabled: true
+  className: azure/application-gateway
+  host: assignment.sikshasathi.tech
+  sslRedirect: "true"
+  sslCertificate: wildcard-sikshasathi-tech
+health:
+  path: /

@@ -1,0 +1,20 @@
+replicaCount: 1
+image:
+  repository: devacr301225.azurecr.io/employee-service
+  tag: 6444a48113fc7d89009fa59edf6c3c9534db38fd
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+env:
+  SERVER_PORT: "8080"
+  ConnectionStrings__EmployeeDb: "Host=dev-postgres301225.postgres.database.azure.com;Port=5432;Database=employeedb;Username=pgadmin;Password=Strong@123"
+ingress:
+  enabled: true
+  className: azure/application-gateway
+  host: employee.sikshasathi.tech
+  sslRedirect: "true"
+  sslCertificate: wildcard-sikshasathi-tech
+health:
+  path: /

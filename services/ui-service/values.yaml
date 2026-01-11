@@ -1,0 +1,26 @@
+replicaCount: 1
+image:
+  repository: devacr301225.azurecr.io/ui-service
+  tag: 54dec62e54e083deced62c590466f65bae70f944
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+env:
+  SERVER_PORT: "80"
+  # Frontend API endpoints
+  REACT_APP_EMPLOYEE_API: https://employee.sikshasathi.tech
+  REACT_APP_ASSET_API: https://asset.sikshasathi.tech
+  REACT_APP_ASSIGNMENT_API: https://assignment.sikshasathi.tech
+  REACT_APP_REPORTING_API: https://reporting.sikshasathi.tech
+ingress:
+  enabled: true
+  className: azure/application-gateway
+  host: ui.sikshasathi.tech
+  sslRedirect: "true"
+  sslCertificate: wildcard-sikshasathi-tech
+health:
+  # UI apps usually don't expose actuator/health
+  # This value is unused unless probes are enabled in chart
+  path: /
